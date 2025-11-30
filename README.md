@@ -30,17 +30,19 @@ See `.env.example` for required variables. You need:
 
 ## Database Setup
 
-Create a Supabase project and table:
+Create a Supabase project and ensure the `appointments` table exists with the following schema:
 
 ```sql
-CREATE TABLE appointments (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  date DATE NOT NULL,
-  time TIME NOT NULL,
-  purpose TEXT
-);
+-- The appointments table should have these columns:
+-- id (UUID, primary key)
+-- full_name (TEXT)
+-- appointment_date (DATE)
+-- appointment_time (TIME)
+-- notes (TEXT)
+-- Other columns as needed for your application
 ```
+
+The agent will use the `full_name`, `appointment_date`, `appointment_time`, and `notes` columns for appointment management.
 
 ## Deployment
 
