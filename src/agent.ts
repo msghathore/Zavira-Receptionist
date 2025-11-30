@@ -38,8 +38,8 @@ export default defineAgent({
               }),
               execute: async ({ date, name }) => {
                 let query = supabase.from('appointments').select('*');
-                if (date) query = query.eq('date', date);
-                if (name) query = query.ilike('name', `%${name}%`);
+                if (date) query = query.eq('appointment_date', date);
+                if (name) query = query.ilike('full_name', `%${name}%`);
                 const { data, error } = await query;
                 if (error) return `Error: ${error.message}`;
                 return data ? JSON.stringify(data) : 'No appointments found';
@@ -56,7 +56,7 @@ export default defineAgent({
               execute: async ({ name, date, time, purpose }) => {
                 const { data, error } = await supabase
                   .from('appointments')
-                  .insert([{ name, date, time, purpose }]);
+                  .insert([{ full_name: name, appointment_date: date, appointment_time: time, notes: purpose }]);
                 if (error) return `Error scheduling: ${error.message}`;
                 return 'Appointment scheduled successfully';
               },
