@@ -2,21 +2,22 @@ import { type JobContext, type JobProcess, defineAgent } from '@livekit/agents';
 import * as silero from '@livekit/agents-plugin-silero';
 import { voice, llm } from '@livekit/agents';
 import * as livekit from '@livekit/agents-plugin-livekit';
-import * as google from '@livekit/agents-plugin-google';
-import * as deepgram from '@livekit/agents-plugin-deepgram';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
 export default defineAgent({
   prewarm: async (proc: JobProcess) => {
+    console.log('Prewarming agent...');
     proc.userData.vad = await silero.VAD.load();
     proc.userData.supabase = createClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_ANON_KEY!
     );
+    console.log('Agent prewarmed successfully');
   },
 
   entry: async (ctx: JobContext) => {
+    console.log('Agent entry called');
     const vad = ctx.proc.userData.vad as silero.VAD;
     const supabase = ctx.proc.userData.supabase as SupabaseClient;
 
@@ -69,9 +70,9 @@ export default defineAgent({
     }
 
     const session = new voice.AgentSession({
-      stt: 'deepgram/nova-3',
-      llm: 'google/gemini-2.0-flash-exp',
-      tts: 'deepgram/aura-asteria-en',
+      stt: 'assemblyai/universal-streaming:en',
+      llm: 'openai/gpt-4o-mini',
+      tts: 'cartesia/sonic-2:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc',
       turnDetection: new livekit.turnDetector.MultilingualModel(),
       vad: vad,
     });
